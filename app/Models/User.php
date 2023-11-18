@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -19,6 +20,7 @@ class User extends Authenticatable
     use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use HasFactory, Notifiable, SoftDeletes; 
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +29,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'email', 'password',
+        'role', // Add the 'role' field
     ];
 
     /**
@@ -58,4 +61,34 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function jobs()
+    {
+        return $this->hasMany(Job::class, 'client_id');
+    }
+
+    public function proposals()
+    {
+        return $this->hasMany(Proposal::class, 'freelancer_id');
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'freelancer_id');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'freelancer_id');
+    }
 }

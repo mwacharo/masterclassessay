@@ -13,7 +13,15 @@ return new class extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('client_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('freelancer_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->string('title');
+            $table->text('description');
+            $table->decimal('budget', 10, 2);
+            $table->date('deadline');
+            $table->string('status')->default('open');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
